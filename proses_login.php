@@ -25,27 +25,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        
-        if (password_verify($password, $row['password'])) {
-            // Password is correct, start a session
-            $_SESSION['nama'] = $row['nama'];
-            $_SESSION['email'] = $row['email'];
-            $_SESSION['role'] = $row['role'];
+    $row = $result->fetch_assoc();
+    
+    if (password_verify($password, $row['password'])) {
+        // Password is correct, start a session
+        $_SESSION['user_id'] = $row['id']; // Simpan id pengguna ke dalam sesi
+        $_SESSION['nama'] = $row['nama'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['role'] = $row['role'];
 
-            // Redirect based on role
-            if ($role == 'admin') {
-                header("Location: admin_dashboard.php");
-            } else {
-                header("Location: reader_dashboard.php");
-            }
-            exit();
+        // Redirect based on role
+        if ($role == 'admin') {
+            header("Location: admin_dashboard.php");
         } else {
-            echo "Invalid password.";
+            header("Location: reader_dashboard.php");
         }
+        exit();
+    } else {
+        echo "Invalid password.";
+    }
     } else {
         echo "No user found with this email and role.";
     }
+
 }
 
 $conn->close();

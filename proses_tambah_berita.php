@@ -24,7 +24,6 @@ $uploadOk = 1;
 if(isset($_POST["submit"])) {
     $check = getimagesize($gambar_tmp);
     if($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
         $uploadOk = 1;
     } else {
         echo "File is not an image.";
@@ -55,20 +54,20 @@ if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
 } else {
     if (move_uploaded_file($gambar_tmp, $target_dir . $slug . '.' . $imageFileType)) {
-        echo "The file ". htmlspecialchars(basename($_FILES["gambar"]["name"])) . " has been uploaded.";
+        $gambar_path = $target_dir . $slug . '.' . $imageFileType;
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
 }
 
 // Memasukkan data berita ke dalam database
-$sql = "INSERT INTO beritas (title, slug, excerpt, body, gambar) VALUES ('$title', '$slug', '$excerpt', '$body', '$target_dir$slug.$imageFileType')";
+$sql = "INSERT INTO beritas (title, slug, excerpt, body, gambar) VALUES ('$title', '$slug', '$excerpt', '$body', '$gambar_path')";
 
 if ($conn->query($sql) === TRUE) {
-    echo "Berita berhasil ditambahkan.";
-    echo "<script>alert('Berita berhasil ditambahkan.');</script>"; // Alert berhasil ditambahkan berita
-    // Arahkan pengguna ke halaman admin_dashboard.php jika koneksi berhasil dan berita berhasil ditambahkan
-    header("Location: admin_dashboard.php?success=true");
+    echo "<script>
+        alert('Berita berhasil ditambahkan.');
+        window.location.href = 'admin_dashboard.php?success=true';
+    </script>";
     exit(); // Pastikan kode selanjutnya tidak dijalankan setelah header
 } else {
     echo "Gagal menambahkan berita: " . $conn->error;

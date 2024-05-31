@@ -23,6 +23,9 @@ if ($result->num_rows > 0) {
     exit();
 }
 
+// Mengambil komentar terkait artikel
+$comments_result = getComments($berita['id']);
+
 // Periksa peran pengguna (role)
 if (isset($_SESSION['role'])) {
     // Jika peran pengguna adalah 'reader', arahkan ke reader_dashboard.php
@@ -37,6 +40,30 @@ if (isset($_SESSION['role'])) {
     // Jika tidak ada peran pengguna yang ditetapkan, arahkan ke halaman login
     header("Location: login.php");
     exit();
+}
+
+// Proses penambahan komentar
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_comment'])) {
+    // Pastikan pengguna telah login
+    if (!isset($_SESSION['email'])) {
+        echo "<script>alert('You must be logged in to comment.'); window.location.href='login.php';</script>";
+        exit();
+    }
+
+    // Mengambil data dari POST request
+    $username = $_SESSION['nama']; // Ambil nama pengguna dari sesi
+    $comment = htmlspecialchars($_POST['comment']);
+    $article_id = $berita['id'];
+
+    if (addComment($article_id, $username, $comment)) {
+        echo "<script>
+            alert('Komentar berhasil ditambahkan!');
+            window.location.href = 'berita.php?slug=$slug';
+        </script>";
+        exit();
+    } else {
+        echo "Gagal menambahkan komentar: " . $conn->error;
+    }
 }
 ?>
 
@@ -72,45 +99,42 @@ if (isset($_SESSION['role'])) {
         </div>
     </nav>
 
-  <div class="container mt-4 bg-dark p-4 rounded">
-    <div class="row">
-        <div class="col-md-8">
-            <h1><?php echo htmlspecialchars($berita['title']); ?></h1>
-            <p class="text-muted">Published on: <?php echo $berita['created_at']; ?></p>
-            <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" class="img-fluid mb-3" alt="<?php echo htmlspecialchars($berita['title']); ?>">
-            <div>
-              <?php echo htmlspecialchars_decode($berita['body']); ?>
+    <div class="container mt-4 bg-dark p-4 rounded">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><?php echo htmlspecialchars($berita['title']); ?></h1>
+                <p class="text-muted">Published on: <?php echo $berita['created_at']; ?></p>
+                <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" class="img-fluid mb-3" alt="<?php echo htmlspecialchars($berita['title']); ?>">
+                <div>
+                    <?php echo htmlspecialchars_decode($berita['body']); ?>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="bg-secondary p-3 rounded">
-                <h4>Comments</h4>
-                <!-- Tempat untuk menampilkan komentar -->
-                <!-- Contoh: -->
-                <div class="media mb-3">
-                    <div class="media-body">
-                        <h5 class="mt-0">John Doe</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
+            <div class="col-md-4">
+                <div class="bg-secondary p-3 rounded">
+                    <h4>Komentar</h4>
+                    <!-- Tempat untuk menampilkan komentar -->
+                    <?php while($comment = $comments_result->fetch_assoc()): ?>
+                        <div class="media mb-3">
+                            <div class="media-body border p-1">
+                                <h6 class="mt-0"><?php echo htmlspecialchars($comment['username']); ?></h6>
+                                <p class="text-info"><?php echo $comment['created_at']; ?></p>
+                                <p class="ml-3 text-dark"><?php echo htmlspecialchars($comment['comment']); ?></p>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+
+                    <!-- Form untuk menambahkan komentar baru -->
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?slug=<?php echo $slug; ?>" method="post">
+                        <div class="form-group">
+                            <label for="commentText">Komen Disini</label>
+                            <textarea class="form-control" id="commentText" name="comment" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="submit_comment">Kirim</button>
+                    </form>
                 </div>
-                <div class="media mb-3">
-                    <div class="media-body">
-                        <h5 class="mt-0">Jane Doe</h5>
-                        <p>Integer eu magna nec elit convallis eleifend.</p>
-                    </div>
-                </div>
-                <!-- Form untuk menambahkan komentar baru -->
-                <form>
-                    <div class="form-group">
-                        <label for="commentText">Your Comment</label>
-                        <textarea class="form-control" id="commentText" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
             </div>
         </div>
     </div>
-  </div>
 
     <footer class="footer">
         <div class="container">

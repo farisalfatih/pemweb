@@ -29,18 +29,8 @@
         $keyword = $_POST["keyword"];
         $berita = cari($keyword);
     }
+
 ?>
-
-<script>
-    // Ambil nilai dari URL parameter success
-    const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get('success');
-
-    // Jika parameter success bernilai true, tampilkan alert
-    if (success) {
-        alert("Berita berhasil ditambahkan!");
-    }
-</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -90,12 +80,12 @@
                     <img src="<?php echo $row['gambar']; ?>" class="card-img-top card-img" alt="Contoh Gambar">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $row['title']; ?></h5>
-                        <p class="card-text"><?php echo $row['excerpt']; ?></p>
+                        <p class="card-text"><?php echo $row['excerpt']; ?><a href="berita.php?slug=<?php echo $row['slug']; ?>"> Baca selengkapnya..</a></p>
                         <p class="card-text">
                             <small class="text-body-secondary"><?php echo $row['created_at']; ?></small>
                         </p>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a href="edit_berita.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a>
+                            <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a>
                             <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Hapus</a>
                         </div>
                     </div>

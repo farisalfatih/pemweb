@@ -14,7 +14,7 @@ $row = $result->fetch_assoc();
 echo "<script>
     var confirmation = confirm('Apakah Anda yakin ingin menghapus berita ini?');
     if (confirmation) {
-        window.location.href = 'hapus_confirmed.php?id=$id'; // Jika konfirmasi, arahkan ke hapus_confirmed.php
+        window.location.href = 'proses_hapus.php?id=$id'; // Jika konfirmasi, arahkan ke proses_hapus.php
     } else {
         window.location.href = 'admin_dashboard.php'; // Jika tidak, arahkan kembali ke halaman admin_dashboard.php
     }

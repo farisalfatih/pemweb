@@ -12,7 +12,7 @@
         <h2>Sign Up</h2>
         
         <!-- Sign Up Form -->
-        <form id="signup-form" action="signup_process.php" method="post">
+        <form id="signup-form" action="proses_signup.php" method="post">
             <div class="form-group">
                 <label for="signup-nama">Nama</label>
                 <input type="text" class="form-control" id="signup-nama" name="nama" required>

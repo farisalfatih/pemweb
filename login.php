@@ -12,7 +12,7 @@
         <h2>Login</h2>
         
         <!-- Login Form -->
-        <form action="login_process.php" method="post">
+        <form action="proses_login.php" method="post">
             <div class="form-group">
                 <label for="login-email">Email</label>
                 <input type="email" class="form-control" id="login-email" name="email" required>
