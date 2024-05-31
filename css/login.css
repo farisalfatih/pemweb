@@ -1,0 +1,49 @@
+body {
+    background-color: #2c2c2c;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    color: #fff;
+    font-family: "Arial", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+.container {
+    max-width: 400px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    overflow-y: auto; /* Tambahkan overflow-y untuk membuat scroll jika konten lebih panjang dari layar */
+    max-height: calc(100vh - 40px); /* 40px untuk margin dan padding */
+}
+.container h2 {
+    font-family: "Fantasy", sans-serif;
+    margin-bottom: 20px;
+}
+.form-group label {
+    color: #ccc;
+}
+.btn-primary {
+    background-color: #28a745;
+    border: none;
+    font-size: 1.2rem;
+    padding: 10px 0;
+}
+.btn-primary:hover {
+    background-color: #218838;
+}
+.text-center a {
+    color: #28a745;
+}
+.text-center a:hover {
+    color: #218838;
+    text-decoration: none;
+}
+#admin-form,
+#mahasiswa-form {
+    display: none;
+}

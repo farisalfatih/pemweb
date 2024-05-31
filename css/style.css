@@ -1,0 +1,104 @@
+body {
+  background-color: #2c2c2c;
+  color: #efefef;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 60px;
+}
+.navbar {
+  background-color: #343a40;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: #ffffff;
+}
+.navbar-nav .nav-link:hover {
+  color: #dee2e6;
+}
+.navbar-toggler-icon {
+  border-color: #ffffff;
+}
+.form-control {
+  background-color: #555;
+  color: #ffffff;
+  border-color: #555;
+}
+.btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+.btn-outline-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #343a40;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 100;
+}
+.card {
+  background-color: #343a40;
+  display: flex;
+  flex-direction: column;
+  margin: 1%;
+  transition: transform 0.3s;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+.card-img {
+  flex: 1;
+  max-height: 150px;
+  object-fit: cover;
+}
+.card-body {
+  flex: 0;
+}
+.container-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+  justify-content: center;
+}
+.team-member {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+}
+.team-member img {
+  width: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+.gambar-about {
+  width: 100%;
+  height: auto;
+  max-width: 150px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 50%;
+}
+.transparent-bg {
+  background-color: rgba(46, 46, 46, 0.8);
+  color: #fff;
+}
+.grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  flex-direction: column;
+}
+.grid-container {
+  display: flex;
+  flex-direction: column;
+}
