@@ -1,22 +1,7 @@
 <?php
     session_start();
-
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-        header("Location: login.php");
-        exit();
-    }
-
-    // Include file koneksi database
     require 'functions.php';
 
-    // Mengambil nama pengguna dari database berdasarkan ID pengguna yang masuk saat ini
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $user = getUserById($user_id);
-        $user_name = $user['nama']; 
-    }
-
-    // Periksa peran pengguna (role)
     if (isset($_SESSION['role'])) {
         // Jika peran pengguna adalah 'reader', arahkan ke index.php
         if ($_SESSION['role'] === 'reader') {
@@ -28,27 +13,50 @@
         }
     }
 
-    // Ambil ID berita dari parameter URL
-    $id = $_GET['id'];
+    // Inisialisasi variabel $user_id jika sudah login
+    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
-    // Query untuk mengambil data berita berdasarkan ID
-    $query = "SELECT * FROM beritas WHERE id='$id'";
-    $result = $conn->query($query);
-    $row = $result->fetch_assoc();
+    // Mengambil data pengguna berdasarkan ID
+    $user = ($user_id) ? getUserById($user_id) : null;
 
-    // Inisialisasi nilai-nilai yang akan ditampilkan dalam form
-    $title = $row['title'];
-    $excerpt = $row['excerpt'];
-    $body = $row['body'];
-    $gambar = $row['gambar'];
+    // Memanggil fungsi validateProfileUpdate jika ada data yang dikirimkan melalui POST
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $errors = validateProfileUpdate($_POST['nama'], $_POST['email'], $_POST['password']);
+
+        // Memeriksa apakah ada kesalahan validasi
+        if (empty($errors)) {
+            // Jika tidak ada kesalahan, lakukan pembaruan profil pengguna
+            $nama = $_POST['nama'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            
+            // Panggil fungsi updateProfile untuk melakukan pembaruan
+            if (updateProfile($user_id, $nama, $email, $password)) {
+                // Jika pembaruan berhasil, tampilkan pemberitahuan menggunakan JavaScript
+                echo "<script>alert('Profil berhasil diperbarui'); window.location.href = '$dashboard_url';</script>";
+            } else {
+                // Jika terjadi kesalahan saat melakukan pembaruan, tampilkan pesan kesalahan
+                echo "<script>alert('Gagal memperbarui profil. Silakan coba lagi.'); window.location.href = '$dashboard_url';</script>";
+            }
+        } else {
+            // Jika terdapat kesalahan validasi, tampilkan pesan kesalahan kepada pengguna
+            foreach ($errors as $error) {
+                echo "<script>alert('$error');</script>";
+            }
+            // Setelah menampilkan pesan kesalahan, alihkan pengguna ke halaman utama
+            echo "<script>window.location.href = '$dashboard_url';</script>";
+        }
+    }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Berita</title>
+    <title>Edit Profil</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -72,7 +80,7 @@
                     </li>
                     <!-- Dropdown Menu -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             User Actions
                         </a>
                         <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
@@ -91,35 +99,34 @@
     </nav>
 
     <div class="container">
-        <h2 class="mt-4 text-center">Edit Berita</h2>
-        <form action="proses_edit.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
+        <h2 class="mt-4 text-center">Edit Profil</h2>
+        <?php if (!empty($notification)) : ?>
+            <div class="alert alert-success" role="alert">
+                <?php echo $notification; ?>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($error_message)) : ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $error_message; ?>
+            </div>
+        <?php endif; ?>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
-                <label for="title">Judul</label>
-                <input type="text" class="form-control" id="title" name="title" value="<?php echo $title; ?>" required>
+                <label for="nama">Nama</label>
+                <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $user['nama']; ?>" required>
             </div>
             <div class="form-group">
-                <label for="excerpt">Excerpt</label>
-                <textarea class="form-control" id="excerpt" name="excerpt" rows="3" required><?php echo $excerpt; ?></textarea>
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" required>
             </div>
             <div class="form-group">
-                <label for="body">Isi Berita</label>
-                <textarea class="form-control" id="body" name="body" rows="5" required><?php echo $body; ?></textarea>
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password baru">
             </div>
-            <div class="form-group">
-                <label for="gambar">Gambar</label>
-                <input type="file" class="form-control-file" id="gambar" name="gambar">
-                <small id="gambarHelp" class="form-text text-muted">Ukuran file maksimal: 2MB. Format yang diperbolehkan: JPG, JPEG, PNG.</small>
-                <input type="hidden" name="gambarLama" value="<?php echo $gambar; ?>">
-            </div>
-            <button type="submit" name="submit" class="btn btn-primary">Simpan Perubahan</button>
+            <!-- Tambahan informasi profil lainnya sesuai kebutuhan -->
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>
     </div>
-
-    <footer class="footer">
-      <div class="container">
-          <span>Info Gresik &copy; 2024</span>
-      </div>
-    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>

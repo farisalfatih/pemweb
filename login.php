@@ -8,11 +8,21 @@
     <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <div class="container text-center">
+    <div class="container text-center mt-5">
         <h2>Login</h2>
         
+        <!-- Menampilkan pesan kesalahan -->
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="alert alert-danger">
+                <?php 
+                echo $_SESSION['error_message']; 
+                unset($_SESSION['error_message']);
+                ?>
+            </div>
+        <?php endif; ?>
+        
         <!-- Login Form -->
-        <form action="proses_login.php" method="post">
+        <form action="proses_login.php" method="post" class="mt-4">
             <div class="form-group">
                 <label for="login-email">Email</label>
                 <input type="email" class="form-control" id="login-email" name="email" required>
@@ -20,13 +30,6 @@
             <div class="form-group">
                 <label for="login-password">Password</label>
                 <input type="password" class="form-control" id="login-password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="login-role">Role</label>
-                <select class="form-control" id="login-role" name="role" required>
-                    <option value="admin">Admin</option>
-                    <option value="reader">Reader</option>
-                </select>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>

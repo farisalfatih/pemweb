@@ -1,13 +1,11 @@
 <?php
     session_start();
 
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-        header("Location: login.php");
-        exit();
-    }
-
-    // Include file koneksi database
+    // Memanggil file functions.php yang berisi fungsi-fungsi terkait database
     require 'functions.php';
+
+    // Mengambil data berita dari database
+    $berita = query('SELECT * FROM beritas');
 
     // Mengambil nama pengguna dari database berdasarkan ID pengguna yang masuk saat ini
     if (isset($_SESSION['user_id'])) {
@@ -16,7 +14,13 @@
         $user_name = $user['nama']; 
     }
 
-    // Periksa peran pengguna (role)
+    // Memproses pencarian berita jika tombol cari ditekan
+    if (isset($_POST["cari"])) {
+        $keyword = $_POST["keyword"];
+        $berita = cari($keyword);
+    }
+
+    // Periksa peran pengguna (role) jika sesi ada
     if (isset($_SESSION['role'])) {
         // Jika peran pengguna adalah 'reader', arahkan ke index.php
         if ($_SESSION['role'] === 'reader') {
@@ -26,21 +30,10 @@
         elseif ($_SESSION['role'] === 'admin') {
             $dashboard_url = 'admin_dashboard.php';
         }
+    } else {
+        // Jika tidak ada sesi, arahkan ke halaman utama (home)
+        $dashboard_url = 'index.php';
     }
-
-    // Ambil ID berita dari parameter URL
-    $id = $_GET['id'];
-
-    // Query untuk mengambil data berita berdasarkan ID
-    $query = "SELECT * FROM beritas WHERE id='$id'";
-    $result = $conn->query($query);
-    $row = $result->fetch_assoc();
-
-    // Inisialisasi nilai-nilai yang akan ditampilkan dalam form
-    $title = $row['title'];
-    $excerpt = $row['excerpt'];
-    $body = $row['body'];
-    $gambar = $row['gambar'];
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +41,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Berita</title>
+    <title>Info Gresik</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -60,9 +53,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <form class="form-inline my-2 my-lg-0 mr-3" method="post">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="cari">Search</button>
+                </form>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo $dashboard_url; ?>">Home</a>
+                        <a class="nav-link active" href="<?php echo $dashboard_url; ?>">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.php">Contact</a>
@@ -90,35 +87,36 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h2 class="mt-4 text-center">Edit Berita</h2>
-        <form action="proses_edit.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="title">Judul</label>
-                <input type="text" class="form-control" id="title" name="title" value="<?php echo $title; ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="excerpt">Excerpt</label>
-                <textarea class="form-control" id="excerpt" name="excerpt" rows="3" required><?php echo $excerpt; ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="body">Isi Berita</label>
-                <textarea class="form-control" id="body" name="body" rows="5" required><?php echo $body; ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="gambar">Gambar</label>
-                <input type="file" class="form-control-file" id="gambar" name="gambar">
-                <small id="gambarHelp" class="form-text text-muted">Ukuran file maksimal: 2MB. Format yang diperbolehkan: JPG, JPEG, PNG.</small>
-                <input type="hidden" name="gambarLama" value="<?php echo $gambar; ?>">
-            </div>
-            <button type="submit" name="submit" class="btn btn-primary">Simpan Perubahan</button>
-        </form>
+    <div class="container mt-4">
+        <div class="container-2">
+            <?php
+                // Mengurutkan berita berdasarkan tanggal pembuatan secara descending
+                usort($berita, function($a, $b) {
+                    return strtotime($b['created_at']) - strtotime($a['created_at']);
+                });
+
+                $i = 1;
+                foreach ($berita as $row) :
+            ?>
+                <a href="berita.php?slug=<?php echo $row['slug']; ?>" class="card text-end">
+                    <img src="<?php echo $row['gambar']; ?>" class="card-img-top card-img" alt="Contoh Gambar">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo $row['title']; ?></h5>
+                        <p class="card-text"><?php echo $row['excerpt']; ?></p>
+                        <p class="card-text">
+                            <small class="text-body-secondary"><?php echo $row['created_at']; ?></small>
+                        </p>
+                    </div>
+                </a>
+            <?php $i++; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <footer class="footer">
-      <div class="container">
-          <span>Info Gresik &copy; 2024</span>
-      </div>
+        <div class="container">
+            <span>Info Gresik &copy; 2024</span>
+        </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

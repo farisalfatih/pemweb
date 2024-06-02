@@ -2,23 +2,32 @@
     // Memulai sesi
     session_start();
 
-    // Periksa peran pengguna (role)
-    if (isset($_SESSION['role'])) {
-        // Jika peran pengguna adalah 'reader', arahkan ke reader_dashboard.php
-        if ($_SESSION['role'] === 'reader') {
-            $dashboard_url = 'reader_dashboard.php';
-        }
-        // Jika peran pengguna adalah 'admin', arahkan ke admin_dashboard.php
-        elseif ($_SESSION['role'] === 'admin') {
-            $dashboard_url = 'admin_dashboard.php';
-        }
-    }
-
     // Memanggil file functions.php yang berisi fungsi-fungsi terkait database
     require 'functions.php';
 
     // Mengambil data berita dari database
     $berita = query('SELECT * FROM beritas');
+
+    // Mengambil nama pengguna dari database berdasarkan ID pengguna yang masuk saat ini
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $user = getUserById($user_id);
+        $user_name = $user['nama']; 
+    }
+
+    // Periksa peran pengguna (role)
+    if (isset($_SESSION['role'])) {
+        // Jika peran pengguna adalah 'reader', arahkan ke index.php
+        if ($_SESSION['role'] === 'reader') {
+            $dashboard_url = 'index.php';
+        }
+        // Jika peran pengguna adalah 'admin', arahkan ke admin_dashboard.php
+        elseif ($_SESSION['role'] === 'admin') {
+            $dashboard_url = 'admin_dashboard.php';
+        }
+    } else {
+        $dashboard_url = 'index.php';
+    }
 
     // Memproses pencarian berita jika tombol cari ditekan
     if (isset($_POST["cari"])) {
@@ -38,8 +47,11 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="<?php echo $dashboard_url; ?>">Info Gresik</a>
+        <div class="container">
+            <a class="navbar-brand mr-4" href="<?php echo $dashboard_url; ?>">Info Gresik</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
@@ -51,10 +63,22 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="about.php">About</a>
                     </li>
+                    <!-- Dropdown Menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            User Actions
+                        </a>
+                        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                            <?php if (isset($_SESSION['role'])): ?>
+                                <a class="dropdown-item text-white" href="edit_profile.php"><?php echo $user_name; ?></a>
+                                <div class="dropdown-divider bg-white"></div>
+                                <a class="dropdown-item font-weight-bold text-danger" href="logout.php">Log Out</a>
+                            <?php else: ?>
+                                <a class="dropdown-item text-success font-weight-bold" href="login.php">Log In</a>
+                            <?php endif; ?>
+                        </div>
+                    </li>
                 </ul>
-                <div class="ml-2">
-                    <a class="btn btn-danger" href="logout.php">Log Out</a>
-                </div>
             </div>
         </div>
     </nav>
