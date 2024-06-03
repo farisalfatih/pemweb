@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -25,7 +26,10 @@ if (isset($_POST['submit'])) {
         </script>";
         exit();
     } else {
-        echo "<script>alert('Berita gagal diubah!');</script>";
+        echo "<script>
+            alert('Gambar Berita berhasil diubah!');
+            window.location.href = 'admin_dashboard.php?success=true';
+        </script>";
     }
 }
 

@@ -12,7 +12,7 @@
         <h2>Sign Up</h2>
         
         <!-- Sign Up Form -->
-        <form id="signup-form" action="proses_signup.php" method="post">
+        <form id="signup-form" action="proses_signup.php" method="post" onsubmit="return validatePassword()">
             <div class="form-group">
                 <label for="signup-nama">Nama</label>
                 <input type="text" class="form-control" id="signup-nama" name="nama" required>
@@ -24,6 +24,10 @@
             <div class="form-group">
                 <label for="signup-password">Password</label>
                 <input type="password" class="form-control" id="signup-password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" class="form-control" id="signup-confirm-password" name="confirm_password" required>
             </div>
             <div class="form-group">
                 <label for="signup-role">Role</label>
@@ -46,5 +50,18 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom Script for Password Validation -->
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("signup-password").value;
+            var confirmPassword = document.getElementById("signup-confirm-password").value;
+            if (password !== confirmPassword) {
+                alert("Password tidak sama");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

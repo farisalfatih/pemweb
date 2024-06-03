@@ -87,8 +87,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($berita['title']); ?></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <style>
+        body {
+            background-color: #2c2c2c;
+            color: #efefef;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 60px;
+        }
+        .navbar {
+            background-color: #343a40;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #dee2e6;
+        }
+        .navbar-toggler-icon {
+            border-color: #ffffff;
+        }
+        .form-control {
+            background-color: #555;
+            color: #ffffff;
+            border-color: #555;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
         .news-container {
             background-color: #212529;
             padding: 30px;
@@ -132,6 +166,16 @@
         }
         .comment-form button {
             margin-top: 10px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 100;
         }
     </style>
 </head>
@@ -177,7 +221,7 @@
         <div class="news-container">
             <h1 class="news-title"><?php echo htmlspecialchars($berita['title']); ?></h1>
             <p class="news-meta">Published on: <?php echo $berita['created_at']; ?></p>
-            <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" class="img-fluid mb-3" alt="<?php echo htmlspecialchars($berita['title']); ?>">
+            <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" class="d-block mx-auto img-fluid mb-3" alt="<?php echo htmlspecialchars($berita['title']); ?>">
             <div class="news-body">
                 <?php echo htmlspecialchars_decode($berita['body']); ?>
             </div>
@@ -213,7 +257,8 @@
         </div>
     </div>
 
-    <footer class="footer">
+    <footer class="footer
+">
         <div class="container">
             <span>Info Gresik &copy; 2024</span>
         </div>

@@ -43,7 +43,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Info Gresik</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #efefef;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 60px;
+        }
+        .navbar {
+            background-color: #343a40;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #dee2e6;
+        }
+        .navbar-toggler-icon {
+            border-color: #ffffff;
+        }
+        .form-control {
+            background-color: #555;
+            color: #ffffff;
+            border-color: #555;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .container-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .card-img {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            max-height: 200px;
+            object-fit: cover;
+        }
+        .card-body {
+            background-color: #3a3a3a;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        .footer {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -98,13 +170,13 @@
                 $i = 1;
                 foreach ($berita as $row) :
             ?>
-                <a href="berita.php?slug=<?php echo $row['slug']; ?>" class="card text-end">
+                <a href="berita.php?slug=<?php echo $row['slug']; ?>" class="card">
                     <img src="<?php echo $row['gambar']; ?>" class="card-img-top card-img" alt="Contoh Gambar">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $row['title']; ?></h5>
                         <p class="card-text"><?php echo $row['excerpt']; ?></p>
                         <p class="card-text">
-                            <small class="text-body-secondary"><?php echo $row['created_at']; ?></small>
+                            <small class="text-muted"><?php echo $row['created_at']; ?></small>
                         </p>
                     </div>
                 </a>
@@ -124,3 +196,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

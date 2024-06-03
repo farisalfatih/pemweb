@@ -13,6 +13,13 @@
         }
     }
 
+    // Mengambil nama pengguna dari database berdasarkan ID pengguna yang masuk saat ini
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $user = getUserById($user_id);
+        $user_name = $user['nama']; 
+    }
+
     // Inisialisasi variabel $user_id jika sudah login
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
@@ -58,7 +65,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Info Gresik | Edit Profil</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #efefef;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 60px;
+        }
+        .navbar {
+            background-color: #343a40;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #dee2e6;
+        }
+        .navbar-toggler-icon {
+            border-color: #ffffff;
+        }
+        .form-control {
+            background-color: #555;
+            color: #ffffff;
+            border-color: #555;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .container-edit {
+            background-color: #3a3a3a;
+            border: 1px solid #555;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            border-radius: 10px;
+            padding: 20px;
+            width: 40%;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -78,9 +144,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="about.php">About</a>
                     </li>
-                    <!-- Dropdown Menu -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             User Actions
                         </a>
                         <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
@@ -98,7 +163,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container container-edit mt-5">
         <h2 class="mt-4 text-center">Edit Profil</h2>
         <?php if (!empty($notification)) : ?>
             <div class="alert alert-success" role="alert">
@@ -113,6 +178,8 @@
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
                 <label for="nama">Nama</label>
+               
+
                 <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $user['nama']; ?>" required>
             </div>
             <div class="form-group">
@@ -127,6 +194,12 @@
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>
     </div>
+
+    <footer class="footer">
+      <div class="container">
+          <span>Info Gresik &copy; 2024</span>
+      </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>

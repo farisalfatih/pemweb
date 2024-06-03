@@ -50,7 +50,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Info Gresik | Edit Berita</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #efefef;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 60px;
+        }
+        .navbar {
+            background-color: #343a40;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #dee2e6;
+        }
+        .navbar-toggler-icon {
+            border-color: #ffffff;
+        }
+        .form-control {
+            background-color: #555;
+            color: #ffffff;
+            border-color: #555;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .footer {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -92,7 +137,7 @@
 
     <div class="container">
         <h2 class="mt-4 text-center">Edit Berita</h2>
-        <form action="proses_edit.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
+        <form action="proses_edit_berita.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Judul</label>
                 <input type="text" class="form-control" id="title" name="title" value="<?php echo $title; ?>" required>
